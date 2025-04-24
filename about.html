@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanSync - About Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1a2a44;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .about-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .about-section h2 {
+            color: #1a2a44;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            color: #34495e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .mission {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .mission h3 {
+            color: #1a2a44;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .mission p {
+            color: #34495e;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #1a2a44;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Chatbot Styles */
+        .chatbot {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 360px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background: #1a2a44;
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 2px solid #dfe6e9;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        .chatbot-input button {
+            background: none;
+            color: #3498db;
+            font-size: 1.5rem;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+
+        .user-message {
+            background: #3498db;
+            color: white;
+            margin-left: 20%;
+        }
+
+        .bot-message {
+            background: #f1f1f1;
+            color: #34495e;
+            margin-right: 20%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>About Us</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="eligibility.html">Check Eligibility</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+    <section class="about-section">
+        <h2>About this Website</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>LoanSync is a trusted platform designed to simplify the loan application process for individuals and businesses in India. Our mission is to empower users by providing a seamless, technology-driven solution to check loan eligibility for home, car, personal, or business loans. With an intuitive eligibility checker, we assess key factors like Aadhaar, PAN, income, CIBIL score, and debt-to-income ratio to deliver transparent results. Whether you're planning a major purchase or seeking funds for growth, LoanSync offers tailored guidance to make informed financial decisions. Committed to transparency and customer satisfaction, we aim to democratize access to financial opportunities, ensuring every user can pursue their goals with confidence. Visit our About page to learn more about how we’re revolutionizing loan accessibility in India.</p>
+                
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1556742044-3c52d6e88c62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="LoanSync Team">
+            </div>
+        </div>
+        <div class="mission">
+            <h3>Our Mission</h3>
+            <p>At LoanSync, we aim to democratize access to financial opportunities by offering a seamless, technology-driven platform. We are committed to transparency, reliability, and customer satisfaction, ensuring every user in India can pursue their financial goals with ease.</p>
+        </div>
+    </section>
+    <footer>
+        <p>© 2025 LoanSync. All rights reserved.</p>
+    </footer>
+
+    <div class="chatbot" id="chatbot">
+        <div class="chatbot-header">
+            <span>LoanSync Assistant</span>
+            <button onclick="toggleChatbot()">✖</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="message bot-message">Welcome to LoanSync! Ask me about our services, loan eligibility, or how we can help you!</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+    
+
+    <script
+    src="https://app.wonderchat.io/scripts/wonderchat.js"
+    data-name="wonderchat"
+    data-address="app.wonderchat.io"
+    data-id="cm9si5jja05muydwyldmpagxz"
+    data-widget-size="normal"
+    data-widget-button-size="normal"
+    defer>
+    
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            chatbot.style.display = chatbot.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatbotBody = document.getElementById('chatbotBody');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            chatbotBody.appendChild(userMessage);
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = getBotResponse(message.toLowerCase());
+            chatbotBody.appendChild(botMessage);
+
+            input.value = '';
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            if (message.includes('about') || message.includes('who are you')) {
+                return 'LoanSync is a platform to simplify loan eligibility checks in India. We help with home, car, personal, and business loans!';
+            } else if (message.includes('loan') || message.includes('eligibility')) {
+                return 'Check your loan eligibility on our <a href="eligibility.html">Eligibility Checker</a> page. Enter your age, income, CIBIL score, and more!';
+            } else if (message.includes('cibil') || message.includes('credit score')) {
+                return 'A CIBIL score of 750+ is ideal for loan approval in India. Higher scores boost your chances!';
+            } else if (message.includes('contact')) {
+                return 'Reach out to us via our <a href="contact.html">Contact</a> page or ask me anything!';
+            } else {
+                return 'I’m here to help! Learn more about loans on our <a href="eligibility.html">Eligibility Checker</a> or ask about our services!';
+            }
+        }
+    </script>
+</body>
+</html>

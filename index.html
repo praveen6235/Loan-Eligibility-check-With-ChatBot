@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanSync - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1a2a44;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: url('https://images.unsplash.com/photo-1560448208-4d17c42ae4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            color: white;
+            margin: 2rem auto;
+            max-width: 1200px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .features {
+            max-width: 1200px;
+            margin: 3rem auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            animation: slideIn 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .feature-card h3 {
+            color: #1a2a44;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            padding: 0 1rem;
+        }
+
+        .feature-card p {
+            color: #34495e;
+            font-size: 1rem;
+            padding: 0 1rem 1.5rem;
+        }
+
+        footer {
+            background: #1a2a44;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Chatbot Styles */
+        .chatbot {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 360px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background: #1a2a44;
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 2px solid #dfe6e9;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        .chatbot-input button {
+            background: none;
+            color: #3498db;
+            font-size: 1.5rem;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+
+        .user-message {
+            background: #3498db;
+            color: white;
+            margin-left: 20%;
+        }
+
+        .bot-message {
+            background: #f1f1f1;
+            color: #34495e;
+            margin-right: 20%;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Loan Eligibility Checker</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="eligibility.html">Check Eligibility</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+    <section class="hero">
+        <h2>Simplify Your Loan Journey</h2>
+        <p>LoanSync helps you discover your eligibility for home, car, personal, or business loans with a user-friendly process tailored for India.</p>
+        <a href="eligibility.html" class="cta-button">Check Eligibility Now</a>
+    </section>
+    <section class="features">
+        <div class="feature-card">
+            <img src="https://thumbs.dreamstime.com/b/concept-image-auto-loan-red-car-auto-loan-178947821.jpg" alt="Fast Process">
+            <h3>Fast & Simple</h3>
+            <p>Check your loan eligibility in minutes with our intuitive form.</p>
+        </div>
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Loan Options">
+            <h3>Multiple Loan Options</h3>
+            <p>Explore loans for homes, cars, personal needs, or business growth.</p>
+        </div>
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Transparent Results">
+            <h3>Transparent Results</h3>
+            <p>Get instant feedback with detailed reports to guide your next steps.</p>
+        </div>
+    </section>
+    <footer>
+        <p>© 2025 LoanSync. All rights reserved.</p>
+    </footer>
+
+    <div class="chatbot" id="chatbot">
+        <div class="chatbot-header">
+            <span>LoanSync Assistant</span>
+            <button onclick="toggleChatbot()">✖</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="message bot-message">Welcome to LoanSync! Ask me about loans, eligibility, or CIBIL scores!</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+
+    <script
+    src="https://app.wonderchat.io/scripts/wonderchat.js"
+    data-name="wonderchat"
+    data-address="app.wonderchat.io"
+    data-id="cm9si5jja05muydwyldmpagxz"
+    data-widget-size="normal"
+    data-widget-button-size="normal"
+    defer>
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            chatbot.style.display = chatbot.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatbotBody = document.getElementById('chatbotBody');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            chatbotBody.appendChild(userMessage);
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = getBotResponse(message.toLowerCase());
+            chatbotBody.appendChild(botMessage);
+
+            input.value = '';
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            if (message.includes('loan') || message.includes('eligibility')) {
+                return 'Check your loan eligibility on our <a href="eligibility.html">Eligibility Checker</a> page. Enter your age, income, CIBIL score, and more!';
+            } else if (message.includes('cibil') || message.includes('credit score')) {
+                return 'A CIBIL score of 750+ is ideal for loan approval in India. Higher scores boost your chances!';
+            } else if (message.includes('income') || message.includes('debt')) {
+                return 'Your debt-to-income ratio should be ≤40%, and annual income should be at least ₹3,00,000.';
+            } else if (message.includes('purpose')) {
+                return 'We support Home, Car, Personal, and Business loans. Select your purpose on the <a href="eligibility.html">Eligibility Checker</a>.';
+            } else if (message.includes('report')) {
+                return 'Download a detailed eligibility report after using the Eligibility Checker.';
+            } else {
+                return 'Ask me about loans, CIBIL scores, or check eligibility on our <a href="eligibility.html">Eligibility Checker</a>!';
+            }
+        }
+        
+    </script>
+</body>
+</html>

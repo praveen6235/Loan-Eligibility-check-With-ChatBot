@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanSync - Eligibility Checker (India)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            background: #1a2a44;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a2a44;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: #3498db;
+            font-size: 1.1rem;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .eligible {
+            background: #6be692;
+            color: #1a3c34;
+        }
+
+        .not-eligible {
+            background: #ff7675;
+            color: #4a1a1a;
+        }
+
+        .progress-bar {
+            margin-top: 20px;
+            background: #dfe6e9;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3498db;
+            transition: width 0.5s ease;
+        }
+
+        .download-btn {
+            background: #2c3e50;
+            margin-left: 10px;
+        }
+
+        .download-btn:hover {
+            background: #1a252f;
+            transform: scale(1.05);
+        }
+
+        /* Chatbot Styles */
+        .chatbot {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 360px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background: #1a2a44;
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 2px solid #dfe6e9;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        .chatbot-input button {
+            background: none;
+            color: #3498db;
+            font-size: 1.5rem;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+
+        .user-message {
+            background: #3498db;
+            color: white;
+            margin-left: 20%;
+        }
+
+        .bot-message {
+            background: #f1f1f1;
+            color: #34495e;
+            margin-right: 20%;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Check Eligibility</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="eligibility.html">Check Eligibility</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Check Your Loan Eligibility</h2>
+        <form id="loanForm">
+            <div class="form-group">
+                <label for="aadhaar">Aadhaar Number:</label>
+                <input type="text" id="aadhaar" name="aadhaar" maxlength="12" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar number" required>
+            </div>
+            <div class="form-group">
+                <label for="pan">PAN Card Number:</label>
+                <input type="text" id="pan" name="pan" maxlength="10" pattern="[A-Z]{5}\d{4}[A-Z]{1}" placeholder="Enter 10-character PAN (e.g., ABCDE1234F)" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" min="18" max="100" required>
+            </div>
+            <div class="form-group">
+                <label for="income">Annual Income (₹):</label>
+                <input type="number" id="income" min="0" step="1000" required>
+            </div>
+            <div class="form-group">
+                <label for="creditScore">CIBIL Score (300-900):</label>
+                <input type="number" id="creditScore" min="300" max="900" required>
+            </div>
+            <div class="form-group">
+                <label for="debt">Existing Debt (₹):</label>
+                <input type="number" id="debt" min="0" step="1000" required>
+            </div>
+            <div class="form-group">
+                <label for="loanAmount">Requested Loan Amount (₹):</label>
+                <input type="range" id="loanAmount" min="100000" max="10000000" value="500000" step="10000" oninput="updateSliderValue(this.value)">
+                <div class="slider-value" id="loanAmountValue">₹5,00,000</div>
+            </div>
+            <div class="form-group">
+                <label for="tenure">Loan Tenure (Years):</label>
+                <input type="number" id="tenure" min="1" max="30" value="5" required>
+            </div>
+            <div class="form-group">
+                <label for="workExperience">Work Experience (Years):</label>
+                <input type="number" id="workExperience" min="0" max="50" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="coApplicant">Add Co-Applicant:</label>
+                <input type="checkbox" id="coApplicant" onchange="toggleCoApplicantFields()">
+            </div>
+            <div id="coApplicantFields" style="display: none;">
+                <div class="form-group">
+                    <label for="coApplicantIncome">Co-Applicant Annual Income (₹):</label>
+                    <input type="number" id="coApplicantIncome" min="0" step="1000">
+                </div>
+                <div class="form-group">
+                    <label for="coApplicantCreditScore">Co-Applicant CIBIL Score (300-900):</label>
+                    <input type="number" id="coApplicantCreditScore" min="300" max="900">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="employment">Employment Status:</label>
+                <select id="employment" required>
+                    <option value="">Select</option>
+                    <option value="employed">Salaried</option>
+                    <option value="self-employed">Self-Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="loanPurpose">Loan Purpose:</label>
+                <select id="loanPurpose" required>
+                    <option value="">Select</option>
+                    <option value="home">Home Loan</option>
+                    <option value="car">Car Loan</option>
+                    <option value="personal">Personal Loan</option>
+                    <option value="business">Business Loan</option>
+                </select>
+            </div>
+            <button type="submit">Check Eligibility</button>
+            <button type="button" class="download-btn" id="downloadReport" style="display: none;">Download Report</button>
+        </form>
+        <div id="result"></div>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <div class="chatbot" id="chatbot">
+        <div class="chatbot-header">
+            <span>LoanSync Assistant</span>
+            <button onclick="toggleChatbot()">✖</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="message bot-message">Welcome to LoanSync! Ask me about loan eligibility, Aadhaar, PAN, tenure, work experience, or co-applicant details!</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script
+    src="https://app.wonderchat.io/scripts/wonderchat.js"
+    data-name="wonderchat"
+    data-address="app.wonderchat.io"
+    data-id="cm9si5jja05muydwyldmpagxz"
+    data-widget-size="normal"
+    data-widget-button-size="normal"
+    defer>
+        function updateSliderValue(value) {
+            const formattedValue = parseInt(value).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            document.getElementById('loanAmountValue').textContent = formattedValue;
+        }
+
+        function toggleCoApplicantFields() {
+            const coApplicantFields = document.getElementById('coApplicantFields');
+            const coApplicantCheckbox = document.getElementById('coApplicant');
+            coApplicantFields.style.display = coApplicantCheckbox.checked ? 'block' : 'none';
+        }
+
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const aadhaar = document.getElementById('aadhaar').value;
+            const pan = document.getElementById('pan').value;
+            const age = parseInt(document.getElementById('age').value);
+            const income = parseInt(document.getElementById('income').value);
+            const creditScore = parseInt(document.getElementById('creditScore').value);
+            const debt = parseInt(document.getElementById('debt').value);
+            const loanAmount = parseInt(document.getElementById('loanAmount').value);
+            const tenure = parseInt(document.getElementById('tenure').value);
+            const workExperience = parseInt(document.getElementById('workExperience').value);
+            const coApplicant = document.getElementById('coApplicant').checked;
+            const coApplicantIncome = coApplicant ? parseInt(document.getElementById('coApplicantIncome').value) || 0 : 0;
+            const coApplicantCreditScore = coApplicant ? parseInt(document.getElementById('coApplicantCreditScore').value) || 300 : 300;
+            const employment = document.getElementById('employment').value;
+            const loanPurpose = document.getElementById('loanPurpose').value;
+            const resultDiv = document.getElementById('result');
+            const progress = document.getElementById('progress');
+            const downloadBtn = document.getElementById('downloadReport');
+
+            // Validate inputs
+            if (isNaN(age) || isNaN(income) || isNaN(creditScore) || isNaN(debt) || isNaN(loanAmount) || isNaN(tenure) || isNaN(workExperience)) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid numbers for all numeric fields.</p>';
+                return;
+            }
+            if (!/^\d{12}$/.test(aadhaar)) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter a valid 12-digit Aadhaar number.</p>';
+                return;
+            }
+            if (!/^[A-Z]{5}\d{4}[A-Z]{1}$/.test(pan)) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter a valid PAN number (e.g., ABCDE1234F).</p>';
+                return;
+            }
+            if (coApplicant && (isNaN(coApplicantIncome) || isNaN(coApplicantCreditScore))) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid co-applicant income and CIBIL score.</p>';
+                return;
+            }
+
+            // Calculate total income
+            const totalIncome = income + coApplicantIncome;
+
+            // Eligibility criteria
+            const debtToIncomeRatio = totalIncome > 0 ? debt / totalIncome : 1;
+            let eligibilityScore = 0;
+            const criteria = [];
+
+            // Age check
+            if (age >= 18 && age <= 65) {
+                eligibilityScore += 20;
+                criteria.push("✅ Age is within acceptable range (18-65)");
+            } else {
+                criteria.push("❌ Age is outside acceptable range");
+            }
+
+            // Income and debt check
+            if (totalIncome >= 300000 && debtToIncomeRatio <= 0.4) {
+                eligibilityScore += 25;
+                criteria.push("✅ Total income (₹3,00,000+) and debt-to-income ratio (≤40%) meet requirements");
+            } else {
+                criteria.push("❌ Total income too low or debt-to-income ratio too high");
+            }
+
+            // Credit score check (average if co-applicant exists)
+            const avgCreditScore = coApplicant ? (creditScore + coApplicantCreditScore) / 2 : creditScore;
+            if (avgCreditScore >= 750) {
+                eligibilityScore += 20;
+                criteria.push("✅ Average CIBIL score meets minimum requirement (750+)");
+            } else {
+                criteria.push("❌ Average CIBIL score below minimum requirement");
+            }
+
+            // Employment check
+            if (employment === 'employed' || employment === 'self-employed') {
+                eligibilityScore += 15;
+                criteria.push("✅ Employment status (Salaried/Self-Employed) is acceptable");
+            } else {
+                criteria.push("❌ Unemployed status affects eligibility");
+            }
+
+            // Work experience check
+            if (workExperience >= 2) {
+                eligibilityScore += 10;
+                criteria.push("✅ Work experience (≥2 years) indicates stability");
+            } else {
+                criteria.push("❌ Insufficient work experience");
+            }
+
+            // Tenure check
+            const maxTenure = loanPurpose === 'home' ? 30 : loanPurpose === 'car' ? 7 : 5;
+            if (tenure <= maxTenure) {
+                eligibilityScore += 10;
+                criteria.push(`✅ Tenure (${tenure} years) is acceptable for ${loanPurpose} loan`);
+            } else {
+                criteria.push(`❌ Tenure exceeds maximum (${maxTenure} years) for ${loanPurpose} loan`);
+            }
+
+            // Update progress bar
+            progress.style.width = `${eligibilityScore}%`;
+
+            // Calculate EMI (simplified formula for demo, assuming 8% annual interest)
+            const monthlyRate = 0.08 / 12;
+            const months = tenure * 12;
+            const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            const affordableEMI = totalIncome * 0.4 / 12; // 40% of monthly income
+            const isEMIAffordable = emi <= affordableEMI;
+            if (isEMIAffordable) {
+                criteria.push("✅ EMI is affordable based on income");
+            } else {
+                criteria.push("❌ EMI exceeds affordable limit");
+            }
+
+            // Final eligibility
+            const isEligible = eligibilityScore >= 80 && loanAmount <= totalIncome * 3 && isEMIAffordable;
+            resultDiv.innerHTML = `
+                <h3>${isEligible ? 'Congratulations!' : 'Sorry!'}</h3>
+                <p>${isEligible ? 'You are eligible for a loan.' : 'You are not eligible for a loan at this time.'}</p>
+                <h4>Eligibility Details:</h4>
+                <ul>${criteria.map(c => `<li>${c}</li>`).join('')}</ul>
+                <p><strong>Eligibility Score:</strong> ${eligibilityScore}%</p>
+                <p><strong>Loan Purpose:</strong> ${loanPurpose.charAt(0).toUpperCase() + loanPurpose.slice(1)}</p>
+                <p><strong>Estimated EMI:</strong> ${Math.round(emi).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}/month</p>
+                <p><strong>Co-Applicant:</strong> ${coApplicant ? 'Yes' : 'No'}</p>
+            `;
+            resultDiv.className = isEligible ? 'eligible' : 'not-eligible';
+
+            // Show download button
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.onclick = () => {
+                const maskedAadhaar = 'XXXX-XXXX-' + aadhaar.slice(-4);
+                const maskedPan = 'XXXXX' + pan.slice(-5);
+                const report = `
+LoanSync Eligibility Report (India)
+---------------------------------
+Date: ${new Date().toLocaleDateString()}
+Aadhaar Number: ${maskedAadhaar}
+PAN Card Number: ${maskedPan}
+Age: ${age}
+Annual Income: ${parseInt(income).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+${coApplicant ? `Co-Applicant Income: ${parseInt(coApplicantIncome).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+Co-Applicant CIBIL Score: ${coApplicantCreditScore}` : 'Co-Applicant: None'}
+CIBIL Score: ${creditScore}
+Existing Debt: ${parseInt(debt).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+Requested Loan Amount: ${parseInt(loanAmount).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+Loan Tenure: ${tenure} years
+Work Experience: ${workExperience} years
+Employment Status: ${employment === 'employed' ? 'Salaried' : employment === 'self-employed' ? 'Self-Employed' : 'Unemployed'}
+Loan Purpose: ${loanPurpose.charAt(0).toUpperCase() + loanPurpose.slice(1)}
+Estimated EMI: ${Math.round(emi).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}/month
+Eligibility Score: ${eligibilityScore}%
+Status: ${isEligible ? 'Eligible' : 'Not Eligible'}
+Details:
+${criteria.join('\n')}
+                `;
+                const blob = new Blob([report], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'LoanSync_Report_India.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+        });
+
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            chatbot.style.display = chatbot.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatbotBody = document.getElementById('chatbotBody');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            chatbotBody.appendChild(userMessage);
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = getBotResponse(message.toLowerCase());
+            chatbotBody.appendChild(botMessage);
+
+            input.value = '';
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            if (message.includes('loan') || message.includes('eligibility')) {
+                return 'Fill out the form above with your Aadhaar, PAN, age, income, CIBIL score, debt, loan amount, tenure, work experience, co-applicant details, employment status, and loan purpose. You need an eligibility score of 80%+!';
+            } else if (message.includes('cibil') || message.includes('credit score')) {
+                return 'A CIBIL score of 750+ is recommended for loan approval in India. Higher scores improve your chances!';
+            } else if (message.includes('income') || message.includes('debt')) {
+                return 'Your debt-to-income ratio should be ≤40%, and total income (including co-applicant) should be at least ₹3,00,000 for eligibility.';
+            } else if (message.includes('purpose')) {
+                return 'Choose a loan purpose like Home, Car, Personal, or Business Loan in the form above.';
+            } else if (message.includes('report')) {
+                return 'After checking eligibility, click "Download Report" to get a detailed summary including Aadhaar, PAN, tenure, and EMI.';
+            } else if (message.includes('aadhaar') || message.includes('aadhar')) {
+                return 'Enter your 12-digit Aadhaar number in the form above. It’s required for identity verification in India.';
+            } else if (message.includes('pan') || message.includes('pan card')) {
+                return 'Enter your 10-character PAN number (e.g., ABCDE1234F) in the form above. It’s needed for financial transactions.';
+            } else if (message.includes('tenure')) {
+                return 'Loan tenure is the repayment period (1-30 years). Choose a tenure that keeps your EMI affordable, typically ≤40% of monthly income.';
+            } else if (message.includes('work experience')) {
+                return 'Enter your work experience in years. At least 2 years of stable work improves your eligibility.';
+            } else if (message.includes('co-applicant')) {
+                return 'A co-applicant (e.g., spouse) can boost eligibility by adding their income and CIBIL score. Check the box to include one.';
+            } else {
+                return 'I’m here to help with loan questions! Ask about Aadhaar, PAN, tenure, work experience, co-applicant, or try the form above.';
+            }
+        }
+    </script>
+</body>
+</html>
