@@ -260,6 +260,12 @@
                 <p><strong>Email:</strong> <a href="mailto:support@loansync.in">praveenbollam9550@gmail.com</a></p>
                 <p><strong>Phone:</strong> 9391452521 </p>
                 <p><strong>Address:</strong> LPU Punjab, India</p>
+                <p><strong>Email:</strong> <a href="mailto:support@loansync.in">lingamsettymadhu@gmail.com</a></p>
+                <p><strong>Phone:</strong> 7569140647 </p>
+                <p><strong>Address:</strong> LPU Punjab, India</p>
+                <p><strong>Email:</strong> <a href="mailto:support@loansync.in">vijaykumar@gmail.com</a></p>
+                <p><strong>Phone:</strong> 7569050663 </p>
+                <p><strong>Address:</strong> LPU Punjab, India</p>
             </div>
             <div class="contact-form">
                 <h3>Feedback</h3>
@@ -298,17 +304,18 @@
             <button onclick="sendMessage()">➤</button>
         </div>
     </div>
-    
 
     <script
     src="https://app.wonderchat.io/scripts/wonderchat.js"
     data-name="wonderchat"
     data-address="app.wonderchat.io"
-    data-id="cm9si5jja05muydwyldmpagxz"
+    data-id="cm9vo8fab0nj910q3nm453nq3"
     data-widget-size="normal"
     data-widget-button-size="normal"
-    defer>
-    
+  
+    defer
+  ></script>    
+    <script>
         function toggleChatbot() {
             const chatbot = document.getElementById('chatbot');
             chatbot.style.display = chatbot.style.display === 'block' ? 'none' : 'block';
@@ -348,11 +355,14 @@
             }
         }
 
-        // Basic form submission handling (for demo purposes)
+        // Form submission handling with popup and page refresh
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-            this.reset();
+            alert('Your message was sent!');
+            this.reset(); // Reset the form fields
+            setTimeout(() => {
+                location.reload(); // Refresh the page after a short delay
+            }); // 1-second delay to ensure the user sees the popup
         });
     </script>
 </body>
