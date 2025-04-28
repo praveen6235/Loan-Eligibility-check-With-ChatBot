@@ -237,7 +237,26 @@
             margin-right: 20%;
         }
 
-        
+        /* Chatbot Toggle Button */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background 0.3s ease;
+        }
+
+        .chatbot-toggle:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -276,8 +295,14 @@
                 <input type="number" id="creditScore" min="300" max="900" required>
             </div>
             <div class="form-group">
-                <label for="debt">Existing Debt (₹):</label>
-                <input type="number" id="debt" min="0" step="1000" required>
+                <label for="debt">Existing Debt Level:</label>
+                <select id="debt" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="loanAmount">Requested Loan Amount (₹):</label>
@@ -333,7 +358,6 @@
             <div class="progress" id="progress" style="width: 0%;"></div>
         </div>
     </div>
-
     <div class="chatbot" id="chatbot">
         <div class="chatbot-header">
             <span>LoanSync Assistant</span>
@@ -348,14 +372,18 @@
         </div>
     </div>
 
+    <!-- WonderChat Script (optional, remove if not needed) -->
     <script
     src="https://app.wonderchat.io/scripts/wonderchat.js"
     data-name="wonderchat"
     data-address="app.wonderchat.io"
-    data-id="cm9si5jja05muydwyldmpagxz"
+    data-id="cm9vo8fab0nj910q3nm453nq3"
     data-widget-size="normal"
     data-widget-button-size="normal"
-    defer>
+  
+    defer
+  ></script>
+    <script>
         function updateSliderValue(value) {
             const formattedValue = parseInt(value).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
             document.getElementById('loanAmountValue').textContent = formattedValue;
@@ -365,6 +393,10 @@
             const coApplicantFields = document.getElementById('coApplicantFields');
             const coApplicantCheckbox = document.getElementById('coApplicant');
             coApplicantFields.style.display = coApplicantCheckbox.checked ? 'block' : 'none';
+            if (!coApplicantCheckbox.checked) {
+                document.getElementById('coApplicantIncome').value = '';
+                document.getElementById('coApplicantCreditScore').value = '';
+            }
         }
 
         document.getElementById('loanForm').addEventListener('submit', function(e) {
@@ -375,7 +407,7 @@
             const age = parseInt(document.getElementById('age').value);
             const income = parseInt(document.getElementById('income').value);
             const creditScore = parseInt(document.getElementById('creditScore').value);
-            const debt = parseInt(document.getElementById('debt').value);
+            let debt = parseInt(document.getElementById('debt').value);
             const loanAmount = parseInt(document.getElementById('loanAmount').value);
             const tenure = parseInt(document.getElementById('tenure').value);
             const workExperience = parseInt(document.getElementById('workExperience').value);
@@ -388,29 +420,42 @@
             const progress = document.getElementById('progress');
             const downloadBtn = document.getElementById('downloadReport');
 
+            // Hide download button initially
+            downloadBtn.style.display = 'none';
+
             // Validate inputs
-            if (isNaN(age) || isNaN(income) || isNaN(creditScore) || isNaN(debt) || isNaN(loanAmount) || isNaN(tenure) || isNaN(workExperience)) {
-                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid numbers for all numeric fields.</p>';
-                return;
-            }
             if (!/^\d{12}$/.test(aadhaar)) {
-                resultDiv.innerHTML = '<p class="not-eligible">Please enter a valid 12-digit Aadhaar number.</p>';
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter a valid 12-digit Aadhaar number (e.g., 123456789012).</p>';
                 return;
             }
             if (!/^[A-Z]{5}\d{4}[A-Z]{1}$/.test(pan)) {
                 resultDiv.innerHTML = '<p class="not-eligible">Please enter a valid PAN number (e.g., ABCDE1234F).</p>';
                 return;
             }
-            if (coApplicant && (isNaN(coApplicantIncome) || isNaN(coApplicantCreditScore))) {
-                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid co-applicant income and CIBIL score.</p>';
+            if (isNaN(age) || isNaN(income) || isNaN(creditScore) || isNaN(debt) || isNaN(loanAmount) || isNaN(tenure) || isNaN(workExperience)) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid numbers for all numeric fields.</p>';
                 return;
+            }
+            if (!employment || !loanPurpose) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please select an employment status and loan purpose.</p>';
+                return;
+            }
+            if (coApplicant && (isNaN(coApplicantIncome) || isNaN(coApplicantCreditScore))) {
+                resultDiv.innerHTML = '<p class="not-eligible">Please enter valid co-applicant income and CIBIL score, or uncheck the co-applicant option.</p>';
+                return;
+            }
+
+            // Validate debt (fallback to 1 if invalid)
+            const validDebtValues = [1, 2, 3, 4, 5];
+            if (!validDebtValues.includes(debt)) {
+                debt = 1; // Default to 1 for any invalid debt value
             }
 
             // Calculate total income
             const totalIncome = income + coApplicantIncome;
 
             // Eligibility criteria
-            const debtToIncomeRatio = totalIncome > 0 ? debt / totalIncome : 1;
+            const debtToIncomeRatio = totalIncome > 0 ? (debt * 100000) / totalIncome : 1; // Scale debt for ratio (e.g., 1 = ₹1,00,000)
             let eligibilityScore = 0;
             const criteria = [];
 
@@ -430,7 +475,7 @@
                 criteria.push("❌ Total income too low or debt-to-income ratio too high");
             }
 
-            // Credit score check (average if co-applicant exists)
+            // Credit score check
             const avgCreditScore = coApplicant ? (creditScore + coApplicantCreditScore) / 2 : creditScore;
             if (avgCreditScore >= 750) {
                 eligibilityScore += 20;
@@ -464,14 +509,14 @@
                 criteria.push(`❌ Tenure exceeds maximum (${maxTenure} years) for ${loanPurpose} loan`);
             }
 
-            // Update progress bar
-            progress.style.width = `${eligibilityScore}%`;
+            // Update progress bar (cap at 100%)
+            progress.style.width = `${Math.min(eligibilityScore, 100)}%`;
 
-            // Calculate EMI (simplified formula for demo, assuming 8% annual interest)
+            // Calculate EMI (simplified, 8% annual interest)
             const monthlyRate = 0.08 / 12;
             const months = tenure * 12;
             const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-            const affordableEMI = totalIncome * 0.4 / 12; // 40% of monthly income
+            const affordableEMI = totalIncome * 0.4 / 12;
             const isEMIAffordable = emi <= affordableEMI;
             if (isEMIAffordable) {
                 criteria.push("✅ EMI is affordable based on income");
@@ -509,7 +554,7 @@ Annual Income: ${parseInt(income).toLocaleString('en-IN', { style: 'currency', c
 ${coApplicant ? `Co-Applicant Income: ${parseInt(coApplicantIncome).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
 Co-Applicant CIBIL Score: ${coApplicantCreditScore}` : 'Co-Applicant: None'}
 CIBIL Score: ${creditScore}
-Existing Debt: ${parseInt(debt).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+Existing Debt Level: ${debt}
 Requested Loan Amount: ${parseInt(loanAmount).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
 Loan Tenure: ${tenure} years
 Work Experience: ${workExperience} years
@@ -558,15 +603,15 @@ ${criteria.join('\n')}
 
         function getBotResponse(message) {
             if (message.includes('loan') || message.includes('eligibility')) {
-                return 'Fill out the form above with your Aadhaar, PAN, age, income, CIBIL score, debt, loan amount, tenure, work experience, co-applicant details, employment status, and loan purpose. You need an eligibility score of 80%+!';
+                return 'Fill out the form above with your Aadhaar, PAN, age, income, CIBIL score, debt level (1-5), loan amount, tenure, work experience, co-applicant details, employment status, and loan purpose. You need an eligibility score of 80%+!';
             } else if (message.includes('cibil') || message.includes('credit score')) {
                 return 'A CIBIL score of 750+ is recommended for loan approval in India. Higher scores improve your chances!';
             } else if (message.includes('income') || message.includes('debt')) {
-                return 'Your debt-to-income ratio should be ≤40%, and total income (including co-applicant) should be at least ₹3,00,000 for eligibility.';
+                return 'Select a debt level from 1 (low) to 5 (high). Your debt-to-income ratio should be ≤40%, and total income (including co-applicant) should be at least ₹3,00,000 for eligibility.';
             } else if (message.includes('purpose')) {
                 return 'Choose a loan purpose like Home, Car, Personal, or Business Loan in the form above.';
             } else if (message.includes('report')) {
-                return 'After checking eligibility, click "Download Report" to get a detailed summary including Aadhaar, PAN, tenure, and EMI.';
+                return 'After checking eligibility, click "Download Report" to get a detailed summary including Aadhaar, PAN, debt level, tenure, and EMI.';
             } else if (message.includes('aadhaar') || message.includes('aadhar')) {
                 return 'Enter your 12-digit Aadhaar number in the form above. It’s required for identity verification in India.';
             } else if (message.includes('pan') || message.includes('pan card')) {
@@ -578,7 +623,7 @@ ${criteria.join('\n')}
             } else if (message.includes('co-applicant')) {
                 return 'A co-applicant (e.g., spouse) can boost eligibility by adding their income and CIBIL score. Check the box to include one.';
             } else {
-                return 'I’m here to help with loan questions! Ask about Aadhaar, PAN, tenure, work experience, co-applicant, or try the form above.';
+                return 'I’m here to help with loan questions! Ask about Aadhaar, PAN, debt level (1-5), tenure, work experience, co-applicant, or try the form above.';
             }
         }
     </script>
